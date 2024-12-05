@@ -30,7 +30,7 @@ services:
       - redis-local
 
   gateway:
-    image: ilyxabanchichi/rsoi-lab4-gateway:latest
+    image: ilyxabanchichi/rsoi-lab5-gateway:latest
     restart: always
     build:
       context: ./app
@@ -49,7 +49,7 @@ services:
       - redis-local
 
   library-service:
-    image: ilyxabanchichi/rsoi-lab4-library-service:latest
+    image: ilyxabanchichi/rsoi-lab5-library-service:latest
     restart: always
     build:
       context: ./app
@@ -68,7 +68,7 @@ services:
       - library-local
 
   reservation-service:
-    image: ilyxabanchichi/rsoi-lab4-reservation-service:latest
+    image: ilyxabanchichi/rsoi-lab5-reservation-service:latest
     restart: always
     build:
       context: ./app
@@ -87,7 +87,7 @@ services:
       - reservation-local
 
   rating-service:
-    image: ilyxabanchichi/rsoi-lab4-rating-service:latest
+    image: ilyxabanchichi/rsoi-lab5-rating-service:latest
     restart: always
     build:
       context: ./app

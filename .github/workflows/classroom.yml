@@ -7,7 +7,7 @@ on:
     branches:
       - master
 env:
-  APP_PATH: /home/${{ secrets.SSH_USER_NAME }}/lab2
+  APP_PATH: /home/${{ secrets.SSH_USER_NAME }}/lab5
 
   ASPNETCORE_ENVIRONMENT: Development
   BUILD_CONFIGURATION: Debug
