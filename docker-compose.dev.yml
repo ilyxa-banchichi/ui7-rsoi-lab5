@@ -29,7 +29,7 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped
     networks:
-      - redis-data
+      - redis-local
 
 networks:
   db-local:
