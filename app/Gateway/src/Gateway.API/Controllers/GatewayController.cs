@@ -5,11 +5,13 @@ using Common.Models.Enums;
 using Gateway.Common.Models.DTO;
 using Gateway.Services;
 using Gateway.Services.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gateway.API.Controllers;
 
 [Route("api/v1")]
+[Authorize]
 [ApiController]
 public class GatewayController(
     ILibraryService libraryService, IReservationService reservationService,

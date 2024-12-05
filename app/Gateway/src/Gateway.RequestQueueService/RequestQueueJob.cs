@@ -32,19 +32,19 @@ public class RequestQueueJob : BackgroundService
         var db = _redis.GetDatabase();
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation($"Start dequeue");
+            // _logger.LogInformation($"Start dequeue");
 
             foreach (var service in _services)
                 await SendToService(db, service);
             
-            _logger.LogInformation("End dequeue");
+            // _logger.LogInformation("End dequeue");
             await Task.Delay(_config.RequestDelayMilliseconds, stoppingToken);
         }
     }
 
     private async Task SendToService(IDatabase db, IRequestQueueUser service)
     {
-        _logger.LogInformation($"Service {service.Name}. Count {db.ListLength(service.Name)}");
+        // _logger.LogInformation($"Service {service.Name}. Count {db.ListLength(service.Name)}");
         
         var requestData = await db.ListLeftPopAsync(service.Name);
         if (!requestData.IsNullOrEmpty)
