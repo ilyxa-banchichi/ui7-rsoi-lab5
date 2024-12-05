@@ -84,10 +84,11 @@ public class GatewayController(
     /// <response code="200">Информация по всем взятым в прокат книгам</response>
     [HttpGet("reservations")]
     [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserReservations([FromHeader(Name = "X-User-Name")][Required] string xUserName)
+    public async Task<IActionResult> GetUserReservations()
     {
         try
         {
+            var xUserName = HttpContext.User.Identity!.Name!;
             var rawReservations = await reservationService.GetUserReservationsAsync(xUserName);
             
             var booksUid = rawReservations.Select(r => r.BookUid);
@@ -140,13 +141,13 @@ public class GatewayController(
     [HttpPost("reservations")]
     [ProducesResponseType(typeof(TakeBookResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> TakeBook(
-        [FromHeader(Name = "X-User-Name")][Required] string xUserName, 
-        [FromBody][Required] TakeBookRequest body)
+    public async Task<IActionResult> TakeBook([FromBody][Required] TakeBookRequest body)
     {
         RawBookReservationResponse? reservation = null;
         try
         {
+            var xUserName = HttpContext.User.Identity!.Name!;
+
             var rawReservations = await reservationService.GetUserReservationsAsync(xUserName);
             var rentedCount = rawReservations.Count(r => r.Status == ReservationStatus.RENTED);
 
@@ -212,12 +213,12 @@ public class GatewayController(
     /// <response code="404">Бронирование не найдено</response>
     [HttpPost("reservations/{reservationUid}/return")]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> ReturnBook(
-        [FromHeader(Name="X-User-Name")][Required] string xUserName,
-        [FromRoute] Guid reservationUid, [FromBody] ReturnBookRequest body)
+    public async Task<IActionResult> ReturnBook([FromRoute] Guid reservationUid, [FromBody] ReturnBookRequest body)
     {
         try
         {
+            var xUserName = HttpContext.User.Identity.Name;
+            
             var reservation = await reservationService.ReturnBook(reservationUid, body.Date);
             if (reservation == null)
                 return NotFound(new ErrorResponse("Бронирование не найдено"));
@@ -263,10 +264,11 @@ public class GatewayController(
     /// <response code="200">Рейтинг пользователя</response>
     [HttpGet("rating")]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserRating([FromHeader(Name = "X-User-Name")][Required] string xUserName)
+    public async Task<IActionResult> GetUserRating()
     {
         try
         {
+            var xUserName = HttpContext.User.Identity!.Name;
             var response = await ratingService.GetUserRating(xUserName);
             return Ok(response);
         }
