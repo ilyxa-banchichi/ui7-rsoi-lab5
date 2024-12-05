@@ -4,32 +4,32 @@
   "values": [
     {
       "key": "serviceUrl",
-      "value": "",
+      "value": "http://localhost:8080/",
       "enabled": true
     },
     {
       "key": "identityProviderUrl",
-      "value": "",
+      "value": "https://dev-u1gvfc78k3kezmpp.us.auth0.com",
       "enabled": true
     },
     {
       "key": "username",
-      "value": "",
+      "value": "lab@mail.com",
       "enabled": true
     },
     {
       "key": "password",
-      "value": "",
+      "value": "test-pass1",
       "enabled": true
     },
     {
       "key": "clientId",
-      "value": "",
+      "value": "zlzPBd94zcoYIvam4q8dRzLtgVTKwjVw",
       "enabled": true
     },
     {
       "key": "clientSecret",
-      "value": "",
+      "value": "WYPNifYN0WnzjbZBSsPifQwQrlExnBTXCUkM7lwDr5Qy5qDHOVoLbn5Ft_Qc2P2j",
       "enabled": true
     }
   ],
