@@ -27,7 +27,7 @@ public abstract class BaseHttpService
 
     protected void AddAuthorizationHeader(HttpRequestHeaders headers, string accessToken)
     {
-        //headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
     
     protected async Task<T?> SendAsync<T>(HttpRequestMessage requestMessage)
