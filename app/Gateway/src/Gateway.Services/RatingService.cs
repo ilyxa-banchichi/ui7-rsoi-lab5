@@ -20,22 +20,22 @@ public class RatingService : BaseHttpService, IRatingService, IRequestQueueUser
         _queueService = queueService;
     }
 
-    public async Task<UserRatingResponse?> GetUserRating(string xUserName)
+    public async Task<UserRatingResponse?> GetUserRating(string accessToken)
     {
         var method = $"/api/v1/rating";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
-        request.Headers.Add("X-User-Name", xUserName);
+        AddAuthorizationHeader(request.Headers, accessToken);
 
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<UserRatingResponse>(request)
         );
     }
 
-    public async Task<UserRatingResponse?> IncreaseRating(string xUserName)
+    public async Task<UserRatingResponse?> IncreaseRating(string accessToken)
     {
         var method = $"/api/v1/rating/increase";
         var request = new HttpRequestMessage(HttpMethod.Patch, method);
-        request.Headers.Add("X-User-Name", xUserName);
+        AddAuthorizationHeader(request.Headers, accessToken);
 
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<UserRatingResponse>(request),
@@ -47,11 +47,11 @@ public class RatingService : BaseHttpService, IRatingService, IRequestQueueUser
         );
     }
 
-    public async Task<UserRatingResponse?> DecreaseRating(string xUserName)
+    public async Task<UserRatingResponse?> DecreaseRating(string accessToken)
     {
         var method = $"/api/v1/rating/decrease";
         var request = new HttpRequestMessage(HttpMethod.Patch, method);
-        request.Headers.Add("X-User-Name", xUserName);
+        AddAuthorizationHeader(request.Headers, accessToken);
 
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<UserRatingResponse>(request),

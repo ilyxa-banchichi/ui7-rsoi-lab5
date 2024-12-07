@@ -5,12 +5,12 @@ namespace Gateway.Services;
 
 public interface ILibraryService
 {
-    Task<LibraryPaginationResponse?> GetLibrariesInCityAsync(string city, int page, int size);
+    Task<LibraryPaginationResponse?> GetLibrariesInCityAsync(string city, int page, int size, string accessToken);
     Task<LibraryBookPaginationResponse?> GetBooksInLibraryAsync(
-        string libraryUid, int page, int size, bool showAll = false);
+        string libraryUid, int page, int size, string accessToken, bool showAll = false);
 
-    Task<List<LibraryResponse>?> GetLibrariesListAsync(IEnumerable<Guid> librariesUid);
-    Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid);
-    Task TakeBookAsync(Guid libraryUid, Guid bookUid);
-    Task<UpdateBookConditionResponse?> ReturnBookAsync(Guid libraryUid, Guid bookUid, BookCondition condition);
+    Task<List<LibraryResponse>?> GetLibrariesListAsync(IEnumerable<Guid> librariesUid, string accessToken);
+    Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid, string accessToken);
+    Task TakeBookAsync(Guid libraryUid, Guid bookUid, string accessToken);
+    Task<UpdateBookConditionResponse?> ReturnBookAsync(Guid libraryUid, Guid bookUid, BookCondition condition, string accessToken);
 }

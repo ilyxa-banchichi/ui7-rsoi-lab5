@@ -4,7 +4,7 @@ namespace Gateway.Services;
 
 public interface IRatingService
 {
-    Task<UserRatingResponse?> GetUserRating(string xUserName);
-    Task<UserRatingResponse?> IncreaseRating(string xUserName);
-    Task<UserRatingResponse?> DecreaseRating(string xUserName);
+    Task<UserRatingResponse?> GetUserRating(string accessToken);
+    Task<UserRatingResponse?> IncreaseRating(string accessToken);
+    Task<UserRatingResponse?> DecreaseRating(string accessToken);
 }

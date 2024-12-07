@@ -1,4 +1,4 @@
-namespace Gateway.OauthService;
+namespace Common.OauthService;
 
 public interface IOauthService
 {

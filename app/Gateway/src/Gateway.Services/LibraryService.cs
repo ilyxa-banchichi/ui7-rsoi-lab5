@@ -26,10 +26,11 @@ public class LibraryService : BaseHttpService, ILibraryService, IRequestQueueUse
     }
 
     public async Task<LibraryPaginationResponse?> GetLibrariesInCityAsync(
-        string city, int page, int size)
+        string city, int page, int size, string accessToken)
     {
         var method = $"/api/v1/libraries?city={city}&page={page}&size={size}";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<LibraryPaginationResponse>(request)
@@ -37,21 +38,24 @@ public class LibraryService : BaseHttpService, ILibraryService, IRequestQueueUse
     }
 
     public async Task<LibraryBookPaginationResponse?> GetBooksInLibraryAsync(
-        string libraryUid, int page, int size, bool showAll = false)
+        string libraryUid, int page, int size, string accessToken, bool showAll = false)
     {
         var method = $"/api/v1/libraries/{libraryUid}/books?page={page}&size={size}&showAll={showAll}";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<LibraryBookPaginationResponse>(request)
         );
     }
 
-    public async Task<List<LibraryResponse>?> GetLibrariesListAsync(IEnumerable<Guid> librariesUid)
+    public async Task<List<LibraryResponse>?> GetLibrariesListAsync(
+        IEnumerable<Guid> librariesUid, string accessToken)
     {
         var method = $"/api/v1/libraries/list";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
         request.Headers.Add("librariesUid", string.Join(", ", librariesUid));
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<List<LibraryResponse>>(request),
@@ -66,11 +70,12 @@ public class LibraryService : BaseHttpService, ILibraryService, IRequestQueueUse
         );
     }
 
-    public async Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid)
+    public async Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid, string accessToken)
     {
         var method = $"/api/v1/libraries/books/list";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
         request.Headers.Add("booksUid", string.Join(", ", booksUid));
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<List<BookInfo>>(request),
@@ -85,10 +90,11 @@ public class LibraryService : BaseHttpService, ILibraryService, IRequestQueueUse
         );
     }
     
-    public async Task TakeBookAsync(Guid libraryUid, Guid bookUid)
+    public async Task TakeBookAsync(Guid libraryUid, Guid bookUid, string accessToken)
     {
         var method = $"/api/v1/libraries/{libraryUid}/books/{bookUid}";
         var request = new HttpRequestMessage(HttpMethod.Patch, method);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         await circuitBreaker.ExecuteCommandAsync<object?>(
             async () =>
@@ -100,11 +106,12 @@ public class LibraryService : BaseHttpService, ILibraryService, IRequestQueueUse
     }
 
     public async Task<UpdateBookConditionResponse?> ReturnBookAsync(
-        Guid libraryUid, Guid bookUid, BookCondition condition)
+        Guid libraryUid, Guid bookUid, BookCondition condition, string accessToken)
     {
         var method = $"/api/v1/libraries/{libraryUid}/books/{bookUid}/return";
         var request = new HttpRequestMessage(HttpMethod.Patch, method);
         request.Content = JsonContent.Create(condition);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<UpdateBookConditionResponse?>(request),

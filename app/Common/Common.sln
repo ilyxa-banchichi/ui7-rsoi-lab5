@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Models", "src\Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.CircuitBreaker", "src\Common.CircuitBreaker\Common.CircuitBreaker.csproj", "{82034D63-2A8A-49D9-B89C-F36DD3886F7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.OauthService", "src\Common.OauthService\Common.OauthService.csproj", "{6F440B35-248A-4A5F-86D8-BC70F90E7A44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{82034D63-2A8A-49D9-B89C-F36DD3886F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82034D63-2A8A-49D9-B89C-F36DD3886F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82034D63-2A8A-49D9-B89C-F36DD3886F7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F440B35-248A-4A5F-86D8-BC70F90E7A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F440B35-248A-4A5F-86D8-BC70F90E7A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F440B35-248A-4A5F-86D8-BC70F90E7A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F440B35-248A-4A5F-86D8-BC70F90E7A44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

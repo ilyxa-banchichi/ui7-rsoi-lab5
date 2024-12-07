@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Gateway.OauthService;
+namespace Common.OauthService;
 
 public static class AddOauthBuilderExtensions
 {

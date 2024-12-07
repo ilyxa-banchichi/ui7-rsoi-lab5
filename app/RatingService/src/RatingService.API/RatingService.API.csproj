@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Common\src\Common.Models\Common.Models.csproj" />
+      <ProjectReference Include="..\..\..\Common\src\Common.OauthService\Common.OauthService.csproj" />
       <ProjectReference Include="..\RatingService.Storage\RatingService.Storage.csproj" />
     </ItemGroup>
 

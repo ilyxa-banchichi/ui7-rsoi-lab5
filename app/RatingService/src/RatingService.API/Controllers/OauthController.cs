@@ -1,7 +1,7 @@
 using Common.OauthService;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gateway.API.Controllers;
+namespace RatingService.API.Controllers;
 
 [ApiController]
 [Route("api/v1")]

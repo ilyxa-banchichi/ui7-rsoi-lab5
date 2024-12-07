@@ -23,22 +23,22 @@ public class ReservationService : BaseHttpService, IReservationService, IRequest
         _queueService = queueService;
     }
 
-    public async Task<List<RawBookReservationResponse>?> GetUserReservationsAsync(string xUserName)
+    public async Task<List<RawBookReservationResponse>?> GetUserReservationsAsync(string accessToken)
     {
         var method = $"/api/v1/reservations";
         var request = new HttpRequestMessage(HttpMethod.Get, method);
-        request.Headers.Add("X-User-Name", xUserName);
+        AddAuthorizationHeader(request.Headers, accessToken);
 
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<List<RawBookReservationResponse>>(request)
         );
     }
 
-    public async Task<RawBookReservationResponse?> TakeBook(string xUserName, TakeBookRequest body)
+    public async Task<RawBookReservationResponse?> TakeBook(string accessToken, TakeBookRequest body)
     {
         var method = $"/api/v1/reservations";
         var request = new HttpRequestMessage(HttpMethod.Post, method);
-        request.Headers.Add("X-User-Name", xUserName);
+        AddAuthorizationHeader(request.Headers, accessToken);
         request.Content = JsonContent.Create(body);
         
         return await circuitBreaker.ExecuteCommandAsync(
@@ -46,10 +46,11 @@ public class ReservationService : BaseHttpService, IReservationService, IRequest
         );
     }
     
-    public async Task TakeBookRollback(Guid reservationGuid)
+    public async Task TakeBookRollback(Guid reservationGuid, string accessToken)
     {
         var method = $"/api/v1/reservations/{reservationGuid}/rollback";
         var request = new HttpRequestMessage(HttpMethod.Delete, method);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         await circuitBreaker.ExecuteCommandAsync<object?>(
             async () =>
@@ -65,11 +66,13 @@ public class ReservationService : BaseHttpService, IReservationService, IRequest
         );
     }
     
-    public async Task<RawBookReservationResponse?> ReturnBook(Guid reservationUid, DateOnly date)
+    public async Task<RawBookReservationResponse?> ReturnBook(
+        Guid reservationUid, DateOnly date, string accessToken)
     {
         var method = $"/api/v1/reservations/{reservationUid}/return";
         var request = new HttpRequestMessage(HttpMethod.Patch, method);
         request.Content = JsonContent.Create(date);
+        AddAuthorizationHeader(request.Headers, accessToken);
         
         return await circuitBreaker.ExecuteCommandAsync(
             async () => await SendAsync<RawBookReservationResponse>(request)

@@ -1,12 +1,8 @@
-using System.Text;
 using Common.CircuitBreaker;
 using Common.Models.Serialization;
-using Gateway.API;
-using Gateway.OauthService;
+using Common.OauthService;
 using Gateway.RequestQueueService;
 using Gateway.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,7 +80,6 @@ builder.Services.Configure<RequestQueueConfig>(builder.Configuration.GetSection(
 builder.Services.Configure<CircuitBreakerConfig>(builder.Configuration.GetSection("CircuitBreakerConfig"));
 
 builder.Services.AddOauth(builder.Configuration);
-
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

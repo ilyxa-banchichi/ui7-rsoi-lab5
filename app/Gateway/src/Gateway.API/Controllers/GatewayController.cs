@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Common.Models.DTO;
 using Common.Models.Enums;
+using Common.OauthService;
 using Gateway.Common.Models.DTO;
 using Gateway.Services;
 using Gateway.Services.Exceptions;
@@ -30,7 +31,8 @@ public class GatewayController(
     {
         try
         {
-            var response = await libraryService.GetLibrariesInCityAsync(city, page, size);
+            var accessToken = TokenUtils.GetToken(HttpContext);
+            var response = await libraryService.GetLibrariesInCityAsync(city, page, size, accessToken);
             return Ok(response);
         }
         catch (HttpRequestException e)
@@ -61,7 +63,8 @@ public class GatewayController(
     {
         try
         {
-            var response = await libraryService.GetBooksInLibraryAsync(libraryUid, page, size, showAll);
+            var accessToken = TokenUtils.GetToken(HttpContext);
+            var response = await libraryService.GetBooksInLibraryAsync(libraryUid, page, size, accessToken, showAll);
             return Ok(response);
         }
         catch (HttpRequestException e)
@@ -80,7 +83,6 @@ public class GatewayController(
     /// <summary>
     /// Получить информацию по всем взятым в прокат книгам пользователя
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <response code="200">Информация по всем взятым в прокат книгам</response>
     [HttpGet("reservations")]
     [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.OK)]
@@ -88,14 +90,14 @@ public class GatewayController(
     {
         try
         {
-            var xUserName = HttpContext.User.Identity!.Name!;
-            var rawReservations = await reservationService.GetUserReservationsAsync(xUserName);
+            var accessToken = TokenUtils.GetToken(HttpContext);
+            var rawReservations = await reservationService.GetUserReservationsAsync(accessToken);
             
             var booksUid = rawReservations.Select(r => r.BookUid);
             var librariesUid = rawReservations.Select(r => r.LibraryUid);
 
-            var booksTask = libraryService.GetBooksListAsync(booksUid);
-            var librariesTask = libraryService.GetLibrariesListAsync(librariesUid);
+            var booksTask = libraryService.GetBooksListAsync(booksUid, accessToken);
+            var librariesTask = libraryService.GetLibrariesListAsync(librariesUid, accessToken);
 
             var books = await booksTask;
             var libraries = await librariesTask;
@@ -134,7 +136,6 @@ public class GatewayController(
     /// <summary>
     /// Взять книгу в библиотеке
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <param name="body"></param>
     /// <response code="200">Информация о бронировании</response>
     /// <response code="400">Ошибка валидации данных</response>
@@ -144,25 +145,24 @@ public class GatewayController(
     public async Task<IActionResult> TakeBook([FromBody][Required] TakeBookRequest body)
     {
         RawBookReservationResponse? reservation = null;
+        var accessToken = TokenUtils.GetToken(HttpContext);
         try
         {
-            var xUserName = HttpContext.User.Identity!.Name!;
-
-            var rawReservations = await reservationService.GetUserReservationsAsync(xUserName);
+            var rawReservations = await reservationService.GetUserReservationsAsync(accessToken);
             var rentedCount = rawReservations.Count(r => r.Status == ReservationStatus.RENTED);
 
-            var userRating = await ratingService.GetUserRating(xUserName);
+            var userRating = await ratingService.GetUserRating(accessToken);
             var maxRentedCount = Math.Ceiling((double)(userRating.Stars / 10));
 
             if (rentedCount > maxRentedCount)
                 return Ok(null);
 
-            reservation = await reservationService.TakeBook(xUserName, body);
+            reservation = await reservationService.TakeBook(accessToken, body);
 
-            await libraryService.TakeBookAsync(body.LibraryUid, body.BookUid);
+            await libraryService.TakeBookAsync(body.LibraryUid, body.BookUid, accessToken);
 
-            var library = (await libraryService.GetLibrariesListAsync(new[] { body.LibraryUid }))[0];
-            var book = (await libraryService.GetBooksListAsync(new[] { body.BookUid }))[0];
+            var library = (await libraryService.GetLibrariesListAsync(new[] { body.LibraryUid }, accessToken))[0];
+            var book = (await libraryService.GetBooksListAsync(new[] { body.BookUid }, accessToken))[0];
 
             var response = new TakeBookResponse()
             {
@@ -186,7 +186,7 @@ public class GatewayController(
         catch (LibraryServiceUnavailableException e)
         {
             if (reservation != null)
-                await reservationService.TakeBookRollback(reservation.ReservationUid);
+                await reservationService.TakeBookRollback(reservation.ReservationUid, accessToken);
             
             return StatusCode((int)HttpStatusCode.ServiceUnavailable, new { Message = "Library Service unavailable" });
         }
@@ -206,7 +206,6 @@ public class GatewayController(
     /// <summary>
     /// Вернуть книгу
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <param name="reservationUid">UUID бронирования</param>
     /// <param name="body"></param>
     /// <response code="204">Книга успешно возвращена</response>
@@ -217,29 +216,29 @@ public class GatewayController(
     {
         try
         {
-            var xUserName = HttpContext.User.Identity.Name;
+            var accessToken = TokenUtils.GetToken(HttpContext);
             
-            var reservation = await reservationService.ReturnBook(reservationUid, body.Date);
+            var reservation = await reservationService.ReturnBook(reservationUid, body.Date, accessToken);
             if (reservation == null)
                 return NotFound(new ErrorResponse("Бронирование не найдено"));
             
             var updateBook = await libraryService.ReturnBookAsync(
-                reservation.LibraryUid, reservation.BookUid, body.Condition);
+                reservation.LibraryUid, reservation.BookUid, body.Condition, accessToken);
 
             bool isConditionChanged = updateBook.NewCondition != updateBook.OldCondition;
             bool isExpired = reservation.Status == ReservationStatus.EXPIRED;
 
             if (!isConditionChanged && !isExpired)
             {
-                await ratingService.IncreaseRating(xUserName);
+                await ratingService.IncreaseRating(accessToken);
             }
             else
             {
                 if (isConditionChanged)
-                    await ratingService.DecreaseRating(xUserName);
+                    await ratingService.DecreaseRating(accessToken);
 
                 if (isExpired)
-                    await ratingService.DecreaseRating(xUserName);
+                    await ratingService.DecreaseRating(accessToken);
             }
             
             return Ok(null);
@@ -260,7 +259,6 @@ public class GatewayController(
     /// <summary>
     /// Получить рейтинг пользователя
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <response code="200">Рейтинг пользователя</response>
     [HttpGet("rating")]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
@@ -268,8 +266,8 @@ public class GatewayController(
     {
         try
         {
-            var xUserName = HttpContext.User.Identity!.Name;
-            var response = await ratingService.GetUserRating(xUserName);
+            var accessToken = TokenUtils.GetToken(HttpContext);
+            var response = await ratingService.GetUserRating(accessToken);
             return Ok(response);
         }
         catch (HttpRequestException e)

@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 
-namespace Gateway.OauthService;
+namespace Common.OauthService;
 
 public class OauthService : IOauthService
 {
