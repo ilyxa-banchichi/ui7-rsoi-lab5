@@ -3,6 +3,7 @@ using Common.Models.Serialization;
 using Common.OauthService;
 using Gateway.RequestQueueService;
 using Gateway.Services;
+using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,32 @@ builder.Services.AddSwaggerGen(options =>
     var basePath = AppContext.BaseDirectory;
     var xmlPath = Path.Combine(basePath, "Gateway.API.xml");
     options.IncludeXmlComments(xmlPath);
+    // Добавляем схему безопасности
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Введите токен"
+    });
+
+    // Добавляем требование безопасности для всех операций
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 builder.Services.AddCors(options =>
