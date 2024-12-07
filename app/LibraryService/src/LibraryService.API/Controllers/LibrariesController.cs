@@ -4,21 +4,17 @@ using Common.Models.DTO;
 using Common.Models.Enums;
 using LibraryService.Common.Converters;
 using LibraryService.Storage.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryService.API.Controllers;
 
 [Route("api/v1/[controller]")]
+[Authorize]
 [ApiController]
 public class LibrariesController(
     ILibrariesRepository librariesRepository, IBooksRepository booksRepository) : Controller
 {
-    [HttpGet("/manage/health")]
-    public IActionResult Health()
-    {
-        return Ok();
-    }
-    
     /// <summary>
     /// Получить список библиотек в городе
     /// </summary>

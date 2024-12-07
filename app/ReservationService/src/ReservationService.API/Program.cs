@@ -1,4 +1,5 @@
 using Common.Models.Serialization;
+using Common.OauthService;
 using ReservationService.Storage.DbContexts;
 using ReservationService.Storage.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,9 @@ builder.Services.AddDbContext<PostgresContext>(
 
 builder.Services.AddTransient<IReservationsRepository, ReservationsRepository>();
 
+builder.Services.AddOauth(builder.Configuration);
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -41,5 +45,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

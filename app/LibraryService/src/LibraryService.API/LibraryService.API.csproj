@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\src\Common.OauthService\Common.OauthService.csproj" />
       <ProjectReference Include="..\LibraryService.Storage\LibraryService.Storage.csproj" />
     </ItemGroup>
 

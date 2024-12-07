@@ -1,3 +1,4 @@
+using Common.OauthService;
 using LibraryService.Storage.DbContexts;
 using LibraryService.Storage.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,9 @@ builder.Services.AddDbContext<PostgresContext>(
 builder.Services.AddTransient<ILibrariesRepository, LibrariesRepository>();
 builder.Services.AddTransient<IBooksRepository, BooksRepository>();
 
+builder.Services.AddOauth(builder.Configuration);
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -37,5 +41,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

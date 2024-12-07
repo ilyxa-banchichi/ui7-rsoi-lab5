@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationService.Common",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Models", "..\Common\src\Common.Models\Common.Models.csproj", "{04C6CEB0-8EA3-48F7-8E0F-75E9FF57DBC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.OauthService", "..\Common\src\Common.OauthService\Common.OauthService.csproj", "{EF6B2408-C4D4-4DFA-895F-E6F3ADBFA97B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{04C6CEB0-8EA3-48F7-8E0F-75E9FF57DBC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04C6CEB0-8EA3-48F7-8E0F-75E9FF57DBC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04C6CEB0-8EA3-48F7-8E0F-75E9FF57DBC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF6B2408-C4D4-4DFA-895F-E6F3ADBFA97B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF6B2408-C4D4-4DFA-895F-E6F3ADBFA97B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF6B2408-C4D4-4DFA-895F-E6F3ADBFA97B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF6B2408-C4D4-4DFA-895F-E6F3ADBFA97B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

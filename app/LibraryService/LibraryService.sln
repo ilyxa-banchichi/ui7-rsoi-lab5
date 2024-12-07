@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryService.Common", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Models", "..\Common\src\Common.Models\Common.Models.csproj", "{5C80EC9F-FE56-4619-8BEF-9879DABD418D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.OauthService", "..\Common\src\Common.OauthService\Common.OauthService.csproj", "{1B4C2EA6-BF27-477F-954C-F63B3EF85342}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{5C80EC9F-FE56-4619-8BEF-9879DABD418D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C80EC9F-FE56-4619-8BEF-9879DABD418D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C80EC9F-FE56-4619-8BEF-9879DABD418D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4C2EA6-BF27-477F-954C-F63B3EF85342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4C2EA6-BF27-477F-954C-F63B3EF85342}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4C2EA6-BF27-477F-954C-F63B3EF85342}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4C2EA6-BF27-477F-954C-F63B3EF85342}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

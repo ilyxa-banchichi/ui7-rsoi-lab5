@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Common.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using ReservationService.Storage.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using ReservationService.Common.Converters;
@@ -8,26 +9,21 @@ using ReservationService.Common.Converters;
 namespace ReservationService.API.Controllers;
 
 [Route("api/v1/[controller]")]
+[Authorize]
 [ApiController]
 public class ReservationsController(IReservationsRepository reservationsRepository) : Controller
 {
-    [HttpGet("/manage/health")]
-    public IActionResult Health()
-    {
-        return Ok();
-    }
-    
     /// <summary>
     /// Получить информацию по всем взятым в прокат книгам пользователя
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <response code="200">Информация по всем взятым в прокат книгам</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<RawBookReservationResponse>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserReservations([FromHeader(Name = "X-User-Name")][Required] string xUserName)
+    public async Task<IActionResult> GetUserReservations()
     {
         try
         {
+            var xUserName = HttpContext.User.Identity.Name;
             var reservations = await reservationsRepository.GetUserReservationsAsync(xUserName);
             return Ok(reservations.Select(r => r.ConvertAppModelToDto()).ToList());
         }
@@ -40,16 +36,15 @@ public class ReservationsController(IReservationsRepository reservationsReposito
     /// <summary>
     /// Взять книгу в библиотеке
     /// </summary>
-    /// <param name="xUserName">Имя пользователя</param>
     /// <param name="body"></param>
     /// <response code="200">Информация о бронировании</response>
     [HttpPost()]
     [ProducesResponseType(typeof(RawBookReservationResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> TakeBook(
-        [FromHeader(Name = "X-User-Name")][Required] string xUserName, [FromBody][Required] TakeBookRequest body)
+    public async Task<IActionResult> TakeBook([FromBody][Required] TakeBookRequest body)
     {
         try
         {
+            var xUserName = HttpContext.User.Identity.Name;
             var reservations = await reservationsRepository.CreateReservationAsync(
                 userName: xUserName,
                 bookUid: body.BookUid,
@@ -68,7 +63,6 @@ public class ReservationsController(IReservationsRepository reservationsReposito
     /// Откат взятия книги в библиотеке
     /// </summary>
     [HttpDelete("{reservationUid}/rollback")]
-
     [ProducesResponseType(typeof(RawBookReservationResponse), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> TakeBookRollback([FromRoute][Required] string reservationUid)
     {
