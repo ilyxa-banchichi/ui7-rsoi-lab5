@@ -1,0 +1,74 @@
+# Default values for my-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+services:
+  gateway:
+    name: gateway
+    container: docker.io/ilyxabanchichi/rsoi-lab3-gateway
+    replicaCount: 1
+    port: 8080
+    publishUrl: /
+    envVars:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: "Development"
+      - name: ConnectionStrings__RedisQueue
+        value: "redis-master:6379,password=redis_pass,abortConnect=false"
+      - name: ConnectionStrings__RatingService
+        value: "http://rsoi-rating-srv:8050"
+      - name: ConnectionStrings__ReservationService
+        value: "http://rsoi-reservations-srv:8070"
+      - name: ConnectionStrings__LibraryService
+        value: "http://rsoi-library-srv:8060"
+      - name: RequestQueueConfig__RequestDelayMilliseconds
+        value: "100"
+      - name: CircuitBreakerConfig__CloseStateThreshold
+        value: "1"
+      - name: CircuitBreakerConfig__OpenStateTimeoutSeconds
+        value: "1"
+      - name: CircuitBreakerConfig__HalfOpenStateThreshold
+        value: "1"
+
+  rating:
+    name: rating
+    container: docker.io/ilyxabanchichi/rsoi-lab3-rating-service
+    replicaCount: 1
+    port: 8050
+    publishUrl: /rating-service-direct/
+    envVars:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: "Development"
+      - name: ConnectionStrings__DefaultConnection
+        value: "Host=postgres-service;Port=5432;Database=ratings;Username=program;Password=test"
+      - name: ASPNETCORE_URLS
+        value: "http://+:8050"
+
+  library:
+    name: library
+    container: docker.io/ilyxabanchichi/rsoi-lab3-library-service
+    replicaCount: 1
+    port: 8060
+    publishUrl: /library-service-direct/
+    envVars:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: "Development"
+      - name: ConnectionStrings__DefaultConnection
+        value: "Host=postgres-service;Port=5432;Database=libraries;Username=program;Password=test"
+      - name: ASPNETCORE_URLS
+        value: "http://+:8060"
+
+  reservations:
+    name: reservations
+    container: docker.io/ilyxabanchichi/rsoi-lab3-reservation-service
+    replicaCount: 1
+    port: 8070
+    publishUrl: /reservations-service-direct/
+    envVars:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: "Development"
+      - name: ConnectionStrings__DefaultConnection
+        value: "Host=postgres-service;Port=5432;Database=reservations;Username=program;Password=test"
+      - name: ASPNETCORE_URLS
+        value: "http://+:8070"

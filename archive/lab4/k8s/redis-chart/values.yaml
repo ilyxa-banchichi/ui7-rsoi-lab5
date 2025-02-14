@@ -1,0 +1,19 @@
+auth:
+  enabled: true
+  password: redis_pass
+
+master:
+  configmap: |
+    requirepass redis_pass
+    dir /data
+    save 900 1
+    save 300 10
+    save 60 10000
+
+replica:
+  configmap: |
+    requirepass redis_pass
+    dir /data
+    save 900 1
+    save 300 10
+    save 60 10000
